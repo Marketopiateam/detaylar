@@ -10,12 +10,12 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Country;
 use App\Models\Shipping;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 use File;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
+use DB;
+use Auth;
+use Hash;
+use Mail;
 use Carbon\Carbon;
 
 class CustomerApiController extends Controller
@@ -95,6 +95,7 @@ class CustomerApiController extends Controller
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
+
   }
 
   public function deleteAddress($id)
@@ -132,9 +133,11 @@ class CustomerApiController extends Controller
       $update = Customer::where('id', $this->getUser->id)->update($request->all());
       $getNew = Customer::select('firstname', 'lastname', 'email', 'image', 'creation', 'telephone')->findOrFail($this->getUser->id);
       return ['status' => 1, 'message' => 'Profile updated successfully!', 'data' => $getNew];
+
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
+
   }
 
   public function addUpdateWishlist(Request $request)
@@ -168,6 +171,7 @@ class CustomerApiController extends Controller
 
       $wishlistData = DB::table('wishlist')->where('customer_id', $this->getUser->id)->get();
       return ['status' => 1, 'message' => $msg, 'wishlistData' => $wishlistData];
+
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
@@ -242,6 +246,7 @@ class CustomerApiController extends Controller
       Customer::whereId($this->getUser->id)->update(['image' => $imageName]);
       $getNew = Customer::select('firstname', 'lastname', 'email', 'telephone', 'image', 'creation')->findOrFail($this->getUser->id);
       return ['status' => 1, 'message' => 'Profile image uploaded!', 'data' => $getNew];
+
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
@@ -287,6 +292,7 @@ class CustomerApiController extends Controller
         ]);
       }
       return ['status' => 1, 'message' => 'Review successfully submited!'];
+
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
@@ -322,4 +328,5 @@ class CustomerApiController extends Controller
     }
     return implode(' ', $new_validation_messages[0]);
   }
+
 }

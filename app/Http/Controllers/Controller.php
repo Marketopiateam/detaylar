@@ -13,7 +13,7 @@ use App\Models\TaxClass;
 use App\Models\TaxRate;
 use App\Models\GeoZone;
 use App\Models\GeoZoneCountry;
-use Illuminate\Support\Facades\DB;
+use DB;
 use Twilio\Rest\Client;
 use App\Http\Controllers\Api\CartApiController;
 
@@ -81,7 +81,7 @@ class Controller extends BaseController
   {
     /*************************************************************
         sms configuration
-     ******************************************************************/
+    ******************************************************************/
     try {
       $account_sid = config("settingConfig.config_twilio_sid");
       $auth_token = config("settingConfig.config_twilio_token");
@@ -92,6 +92,7 @@ class Controller extends BaseController
         'body' => $message
       ]);
     } catch (\Exception $e) {
+
     }
   }
 
@@ -174,6 +175,7 @@ class Controller extends BaseController
                       'product_id' => $userID > 0 ? $value['id'] : $value['pid']
                     ];
                   }
+
                 }
               }
             }
@@ -228,4 +230,5 @@ class Controller extends BaseController
 
     return ['tax' => $finaTaxArr, 'grandTotal' => $grandTotal];
   }
+
 }

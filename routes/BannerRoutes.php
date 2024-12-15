@@ -1,8 +1,5 @@
 <?php
-
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BannerController;
-
 Route::group(['prefix' => 'banner'], function () {
   Route::controller(BannerController::class)->group(function () {
     Route::get('/', ['as' => 'banner', 'uses' => 'index']);

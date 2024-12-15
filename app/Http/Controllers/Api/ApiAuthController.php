@@ -6,21 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Customer;
 use App\Models\Product;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 use Carbon\Carbon;
 use File;
 use Response;
-use Illuminate\Support\Facades\Hash;
+use Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Config;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use App\Models\User;
+use Auth;
+use DB;
+use Mail;
 
 class ApiAuthController extends Controller
 {
@@ -30,7 +29,10 @@ class ApiAuthController extends Controller
     //     $this->apiToken = uniqid(base64_encode(Str::random(10)));
     // }
 
-    public function __construct() {}
+    public function __construct()
+    {
+
+    }
 
     public function register(Request $request)
     {
@@ -38,11 +40,10 @@ class ApiAuthController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'first_name' => 'required|regex:/^[\pL\s\-]+$/u',
-                'last_name'  => 'required|regex:/^[\pL\s\-]+$/u',
-                'email'      => 'required|unique:customer,email',
-                'phone'      => 'required|max:10',
-                'password'   => 'required|min:4',
+                'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+                'email' => 'required|unique:customer,email',
+                'telephone' => 'required|max:10',
+                'password' => 'required|min:4',
             ]
         );
 
@@ -55,17 +56,18 @@ class ApiAuthController extends Controller
 
             if ($data->save()) {
                 try {
-                    $getAlertEmails = config('settingConfig.config_alert_mail');
-                    /*************************************************************
+                  $getAlertEmails = config('settingConfig.config_alert_mail');
+                  /*************************************************************
                       email configuration uncomment this code after setting up mail port ,username and password in .env file
-                     ******************************************************************/
-                    if (strpos($getAlertEmails, 'Register') !== false) {
-                        Mail::send('admin.emails.registration', [], function ($m) use ($request) {
-                            $m->from(config('settingConfig.config_email'), config('settingConfig.config_store_name'));
-                            $m->to($request->email, $request->firstname)->subject('Welcome To ' . config('settingConfig.config_store_name'));
-                        });
-                    }
+                  ******************************************************************/
+                  if (strpos($getAlertEmails, 'Register') !== false) {
+                    Mail::send('admin.emails.registration', [], function ($m) use($request) {
+                        $m->from(config('settingConfig.config_email'), config('settingConfig.config_store_name'));
+                        $m->to($request->email, $request->firstname)->subject('Welcome To '.config('settingConfig.config_store_name'));
+                      });
+                  }
                 } catch (\Exception $e) {
+
                 }
 
                 $isFlutter = $request->get('is_flutter', null);
@@ -198,6 +200,7 @@ class ApiAuthController extends Controller
                         } else {
                             return ['status' => 0, 'message' => 'Email/Password Wrong', 'data' => json_decode('{}')];
                         }
+
                     } else {
                         return ['status' => 0, 'message' => 'Customer not found', 'data' => json_decode('{}'), 'code' => '401', 'new' => 0];
                     }
@@ -205,9 +208,11 @@ class ApiAuthController extends Controller
             } else {
                 return ['status' => 0, 'message' => 'Customer already exist with other social mail', 'new' => 0];
             }
+
         } else {
             return ['status' => 0, 'message' => 'New customer', 'new' => 1];
         }
+
     }
 
     public function socialRegister(Request $request)
@@ -274,7 +279,7 @@ class ApiAuthController extends Controller
                     'to_name' => $findUser->first_name . ' ' . $findUser->last_name,
                 ];
 
-                Mail::send('email.forgotPassword', $message, function ($m) use ($message) {
+                \Mail::send('email.forgotPassword', $message, function ($m) use ($message) {
                     $m->to($message['to_email'], $message['to_name'])
                         ->subject('Forgot Password');
                     $m->from('support@infuzehydration.com', 'Reset Password');
@@ -339,6 +344,7 @@ class ApiAuthController extends Controller
         } else {
             return ['status' => 0, 'message' => 'Invalid OTP'];
         }
+
     }
 
     //resett password
@@ -365,10 +371,13 @@ class ApiAuthController extends Controller
         return ['status' => 1, 'message' => 'successfully logout!'];
     }
 
-    public function deleteAccount()
+      public function deleteAccount()
     {
         $customer = Auth::guard('api')->user();
         Customer::where('email', $customer->email)->delete();
         return ['status' => 1, 'message' => 'successfully Deleted!'];
     }
+
+
+
 }
