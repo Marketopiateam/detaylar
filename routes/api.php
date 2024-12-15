@@ -62,7 +62,6 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/verifyOTP', 'verifyOTP');
     Route::post('/resetPassword', 'resetPassword');
     Route::get('/deleteAccount', 'deleteAccount');
-
   });
 
   Route::middleware(['CustomerAuthAPI'])->group(function () {
@@ -94,7 +93,6 @@ Route::group(['prefix' => 'user'], function () {
       Route::post('/cancelOrder', 'cancelOrder');
       Route::get('getOrderTimeline/{id?}', 'getOrderTimeline');
       Route::post('/calculate-tax', 'calculateTax');
-
     });
   });
 });
