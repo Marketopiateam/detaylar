@@ -38,10 +38,11 @@ class ApiAuthController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
-                'email' => 'required|unique:customer,email',
-                'telephone' => 'required|max:10',
-                'password' => 'required|min:4',
+                'first_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                'last_name'  => 'required|regex:/^[\pL\s\-]+$/u',
+                'email'      => 'required|unique:customer,email',
+                'phone'      => 'required|max:10',
+                'password'   => 'required|min:4',
             ]
         );
 
