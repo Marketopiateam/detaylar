@@ -32,9 +32,7 @@ use Carbon\Carbon;
 class GeneralApiController extends Controller
 {
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     //homepage init api
     public function getHomePageInit(Request $request)
@@ -199,7 +197,6 @@ class GeneralApiController extends Controller
             $data['categoryWiseProduct'] = $dataCatWiseProducts;
             $data['enable_image_similarity'] = config('imagesimilarity.ENABLE_IMAGE_SIMILARITY');
             return ['status' => 1, 'data' => $data];
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
@@ -354,7 +351,6 @@ class GeneralApiController extends Controller
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
-
     }
 
     //get product details
@@ -379,8 +375,7 @@ class GeneralApiController extends Controller
                         ->whereIn('id', $relatedIds)->get();
                 }
 
-                $productRelatedAttribute = ProductRelatedAttribute::
-                    join('product_attributes', 'product_attributes.id', '=', 'product_related_attributes.attribute_id')
+                $productRelatedAttribute = ProductRelatedAttribute::join('product_attributes', 'product_attributes.id', '=', 'product_related_attributes.attribute_id')
                     ->join('product_attribute_description', 'product_attribute_description.attribute_id', '=', 'product_attributes.id')
                     ->join('product_attribute_groups', 'product_attribute_groups.id', '=', 'product_attributes.group_id')
                     ->join('product_attribute_group_description', 'product_attribute_group_description.attribute_group_id', '=', 'product_attribute_groups.id')
@@ -509,11 +504,9 @@ class GeneralApiController extends Controller
                 ->with('categoryDescription:name,category_id')->where('category_id', $id)->first();
 
             return ['status' => 1, 'productsList' => $data, 'categoryData' => $categoryData];
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
-
     }
 
     //get product by manufacturer id
@@ -554,7 +547,6 @@ class GeneralApiController extends Controller
             $brandData = Manufacturer::where('id', $id)->first();
 
             return ['status' => 1, 'productsList' => $data, 'brandData' => $brandData];
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
@@ -617,24 +609,26 @@ class GeneralApiController extends Controller
     }
 
     //image similarity
-    public function imageSimilarity(Request $request) {
-      try {
-          $validator = Validator::make($request->all(),[
-                'image'     => 'required|image|mimes:jpeg,jpg,png|max:512',
-             ]
-           );
+    public function imageSimilarity(Request $request)
+    {
+        try {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'image'     => 'required|image|mimes:jpeg,jpg,png|max:512',
+                ]
+            );
 
-           if ($validator->fails())
-           {
-             $message = $this->one_validation_message($validator);
-               return  ['status' => 0 , 'message' => $message];
-           }
+            if ($validator->fails()) {
+                $message = $this->one_validation_message($validator);
+                return  ['status' => 0, 'message' => $message];
+            }
 
-           //call AI Image Search
-           $client = new \GuzzleHttp\Client();
+            //call AI Image Search
+            $client = new \GuzzleHttp\Client();
 
-           $res = $client->request('POST', env('AI_IMAGE_SIMILARITY_ENDPOINT').'AI-image-similarity', [
-             'multipart' => [
+            $res = $client->request('POST', env('AI_IMAGE_SIMILARITY_ENDPOINT') . 'AI-image-similarity', [
+                'multipart' => [
                     [
                         'name'     => 'image',
                         'contents' => file_get_contents($request->file('image')->getPathname()),
@@ -645,37 +639,34 @@ class GeneralApiController extends Controller
                         'contents' => url('/')
                     ],
                 ]
-             ]);
+            ]);
 
-             $response = json_decode($res->getBody(), true);
-             if($response['status'] == 1) {
-               if(count($response['data']) > 0) {
-                 $data = Product::with('category:name,category_id','productDescription:id,product_id,name','special:product_id,price,start_date,end_date')
-                   ->withCount(['productReview as review_avg' => function($query) {
-                       $query->select(DB::raw('avg(rating)'));
-                     }])
-                    ->select('id','image','category_id', 'price', 'quantity','sort_order','status','date_available','created_at')
-                    ->where('date_available','<=',date('Y-m-d'))
-                    ->where('status','1')
-                    ->orderBy('created_at','DESC')
-                    ->whereIn('product.image',$response['data'])
-                    ->take(20)
-                    ->get();
-                  }
-                  else {
+            $response = json_decode($res->getBody(), true);
+            if ($response['status'] == 1) {
+                if (count($response['data']) > 0) {
+                    $data = Product::with('category:name,category_id', 'productDescription:id,product_id,name', 'special:product_id,price,start_date,end_date')
+                        ->withCount(['productReview as review_avg' => function ($query) {
+                            $query->select(DB::raw('avg(rating)'));
+                        }])
+                        ->select('id', 'image', 'category_id', 'price', 'quantity', 'sort_order', 'status', 'date_available', 'created_at')
+                        ->where('date_available', '<=', date('Y-m-d'))
+                        ->where('status', '1')
+                        ->orderBy('created_at', 'DESC')
+                        ->whereIn('product.image', $response['data'])
+                        ->take(20)
+                        ->get();
+                } else {
                     $data = [];
-                  }
+                }
 
-               return  ['status'=> 1,'data' => $data ];
-             }
-             else {
-               return  ['status'=> 0,'message'=>'Failed to fetch','data' => [] ];
-             }
-      } catch (\Exception $e) {
-        return  ['status'=> 0,'message'=>'Error' ];
-      }
-  }
-
+                return  ['status' => 1, 'data' => $data];
+            } else {
+                return  ['status' => 0, 'message' => 'Failed to fetch', 'data' => []];
+            }
+        } catch (\Exception $e) {
+            return  ['status' => 0, 'message' => 'Error'];
+        }
+    }
 }
 
 //cat parent child function

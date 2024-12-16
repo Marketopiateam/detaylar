@@ -14,12 +14,12 @@ use App\Models\OrderHistory;
 use App\Models\OrderTax;
 use App\Models\Shipping;
 use App\Models\StoreProductOption;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use File;
-use Notification;
-use DB;
-use Auth;
-use Mail;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use PDF;
 use App\Notification\PanelNotification;
@@ -72,11 +72,9 @@ class CartApiController extends Controller
                         $cartCount = DB::table('cart')->where('customer_id', $this->getUser->id)->sum('quantity');
 
                         return ['status' => 1, 'message' => 'Product Added To Cart!', 'cartCount' => $cartCount];
-
                     } else {
                         return ['status' => 0, 'message' => 'Only ' . $getProduct->quantity . ' products in stock'];
                     }
-
                 }
 
                 //insert product to cart
@@ -102,12 +100,10 @@ class CartApiController extends Controller
                     } else {
                         return ['status' => 0, 'message' => 'Only ' . $getProduct->quantity . ' products in stock'];
                     }
-
                 }
             } else {
                 return ['status' => 0, 'message' => 'Product not found!'];
             }
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
@@ -131,7 +127,6 @@ class CartApiController extends Controller
                 'grandTotal' => $cartRecord['grandTotal'],
                 'taxes' => $cartRecord['taxes']
             ];
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
@@ -181,14 +176,12 @@ class CartApiController extends Controller
                         'grandTotal' => $cartRecord['grandTotal'],
                         'taxes' => $cartRecord['taxes']
                     ];
-
                 } else {
                     return ['status' => 0, 'message' => 'Only ' . $getProduct->quantity . ' products in stock'];
                 }
             } else {
                 return ['status' => 0, 'message' => 'Error'];
             }
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
@@ -300,11 +293,9 @@ class CartApiController extends Controller
             } else {
                 return ['status' => 0, 'message' => 'Invalid coupon code'];
             }
-
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
-
     }
 
     public function getCheckoutData()
@@ -461,7 +452,7 @@ class CartApiController extends Controller
 
                     /*************************************************************
                           email configuration uncomment this code after setting up mail port ,username and password in .env file
-               *********************************/
+                     *********************************/
 
                     // Mail::send('admin.emails.order', ['orderData' => $orderArr,'orderProducts' => $storeOrderProductArr], function ($m) use($email,$name,$request) {
                     //     $m->from(config('settingConfig.config_email'), config('settingConfig.config_store_name'));
@@ -484,12 +475,11 @@ class CartApiController extends Controller
                     $users = User::all();
                     Notification::send($users, new PanelNotification($notiData));
                 } catch (\Exception $e) {
-
                 }
 
                 /*************************************************************
                     sms configuration
-                ******************************************************************/
+                 ******************************************************************/
                 try {
                     $getAlertSMS = config('settingConfig.config_alert_sms');
                     if (isset($this->getUser) && strpos($getAlertSMS, 'Orders') !== false) {
@@ -499,12 +489,11 @@ class CartApiController extends Controller
                         $this->sendSMS($receiverNumber, $message);
                     }
                 } catch (\Exception $e) {
-
                 }
 
                 /*************************************************************
                            email configuration uncomment this code after setting up mail port ,username and password in .env file
-                *********************************/
+                 *********************************/
                 try {
                     $getAlertEmails = config('settingConfig.config_alert_mail');
                     if (strpos($getAlertEmails, 'Orders') !== false) {
@@ -530,7 +519,6 @@ class CartApiController extends Controller
         } catch (\Exception $e) {
             return ['status' => 0, 'message' => 'Error'];
         }
-
     }
 
     //get order list
@@ -597,7 +585,6 @@ class CartApiController extends Controller
         }
 
         return $finalTaxRates;
-
     }
 
     //get cart
@@ -694,8 +681,6 @@ class CartApiController extends Controller
                     'taxName' => $value->taxName,
                     'tax_class_id' => $value->tax_rate_id
                 ];
-
-
             }
 
             $subTotal[] = ['subTotal' => $cartTotal];
@@ -741,5 +726,4 @@ class CartApiController extends Controller
 
         return $this->calculateZoneTax($request->address_id, $this->getUser->id);
     }
-
 }

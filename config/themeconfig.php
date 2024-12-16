@@ -11,13 +11,6 @@ return [
  'isCurrentTheme' => '1'  ,
  ],
  [
- 'themename' => 'Orange Theme'  ,
- 'themeColorCode' => '#EA6418'  ,
- 'product_bg' => '#efe5da'  ,
- 'website_bg' => '#FFFFFF'  ,
- 'isCurrentTheme' => '0'  ,
- ],
- [
  'themename' => 'Red Theme'  ,
  'themeColorCode' => '#F24C62'  ,
  'product_bg' => '#8b9994'  ,
@@ -29,6 +22,13 @@ return [
  'themeColorCode' => '#000000'  ,
  'product_bg' => '#f5e9eb'  ,
  'website_bg' => '#fff'  ,
+ 'isCurrentTheme' => '0'  ,
+ ],
+ [
+ 'themename' => 'Orange Theme'  ,
+ 'themeColorCode' => '#EA6418'  ,
+ 'product_bg' => '#efe5da'  ,
+ 'website_bg' => '#FFFFFF'  ,
  'isCurrentTheme' => '0'  ,
  ],
  [
