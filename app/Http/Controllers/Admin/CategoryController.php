@@ -54,6 +54,7 @@ class CategoryController extends Controller
         $this->createDirectory($this->path);
         $category = new Category($request->only('sort_order', 'status', 'parent_id'));
         $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
+        $category->image = "uploads/category/$category->image";
         $category->save();
 
         $categoryDescription = new CategoryDescription();
@@ -91,6 +92,7 @@ class CategoryController extends Controller
                 unlink($currentCategoryImage);
             }
             $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
+            $category->image = "uploads/category/$category->image";
         }
 
         $category->fill($request->only('sort_order', 'status', 'parent_id'))->save();

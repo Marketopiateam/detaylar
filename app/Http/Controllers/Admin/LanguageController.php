@@ -46,6 +46,7 @@ class LanguageController extends Controller
     $this->createDirectory($this->path);
     $language = new Language($request->only('language_name', 'sort_order', 'default_lang', 'code', 'status'));
     $language->language_flag = $this->saveCustomFileAndGetImageName(request()->file('language_flag'), $this->path);
+    $language->language_flag = "uploads/language/$language->language_flag";
     $language->save();
 
     //set session language
@@ -110,6 +111,7 @@ class LanguageController extends Controller
         }
       }
       $language->language_flag = $this->saveCustomFileAndGetImageName(request()->file('language_flag'), $this->path);
+      $language->language_flag = "uploads/language/$language->language_flag";
     }
 
     $language->fill($request->only('default_lang', 'sort_order', 'language_name', 'status', 'code'))->save();

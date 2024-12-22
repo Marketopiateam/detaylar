@@ -22,12 +22,12 @@ class ManufacturerController extends Controller
 
     public function index(Request $request)
     {
-//        dd($request->all());
+        //        dd($request->all());
         $name = $request->get('name', '');
-        $records = Manufacturer::select('id','name','image','sort_order', 'status')
+        $records = Manufacturer::select('id', 'name', 'image', 'sort_order', 'status')
             ->when($name != '', function ($q) use ($name) {
-                    $q->where('name', 'like', "%$name%");
-            })->orderBy('created_at','DESC')->paginate($this->defaultPaginate);
+                $q->where('name', 'like', "%$name%");
+            })->orderBy('created_at', 'DESC')->paginate($this->defaultPaginate);
         return view('admin.manufacturer.index', ['records' => $records]);
     }
 
@@ -48,18 +48,19 @@ class ManufacturerController extends Controller
         $this->createDirectory($this->path);
         $data = new Manufacturer($request->only('name', 'sort_order', 'status'));
         $data->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
+        $data->image = "uploads/manufacturer/$data->image";
         $data->save();
 
-        $brands = Manufacturer::select('id','name','status','sort_order','image')
-        ->where('status','1')
-        ->orderBy('sort_order','ASC')
-        ->take(8)
-        ->get();
+        $brands = Manufacturer::select('id', 'name', 'status', 'sort_order', 'image')
+            ->where('status', '1')
+            ->orderBy('sort_order', 'ASC')
+            ->take(8)
+            ->get();
 
-        $val  =	json_encode($brands);
-        $filename = base_path().'/storage/app/brands.json';
-        $fp=fopen($filename,"w");
-        fwrite($fp,$val);
+        $val  =    json_encode($brands);
+        $filename = base_path() . '/storage/app/brands.json';
+        $fp = fopen($filename, "w");
+        fwrite($fp, $val);
         fclose($fp);
 
         return redirect(route('manufacturer'))->with('success', 'Manufacturer Created Successfully');
@@ -88,20 +89,21 @@ class ManufacturerController extends Controller
                 unlink($currentCategoryImage);
             }
             $data->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
+            $data->image = "uploads/manufacturer/$data->image";
         }
 
         $data->fill($request->only('name', 'sort_order', 'status'))->save();
 
-        $brands = Manufacturer::select('id','name','status','sort_order','image')
-        ->where('status','1')
-        ->orderBy('sort_order','ASC')
-        ->take(8)
-        ->get();
-        
-        $val  =	json_encode($brands);
-        $filename = base_path().'/storage/app/brands.json';
-        $fp=fopen($filename,"w");
-        fwrite($fp,$val);
+        $brands = Manufacturer::select('id', 'name', 'status', 'sort_order', 'image')
+            ->where('status', '1')
+            ->orderBy('sort_order', 'ASC')
+            ->take(8)
+            ->get();
+
+        $val  =    json_encode($brands);
+        $filename = base_path() . '/storage/app/brands.json';
+        $fp = fopen($filename, "w");
+        fwrite($fp, $val);
         fclose($fp);
 
         return redirect(route('manufacturer'))->with('success', 'Manufacturer Updated Successfully');
@@ -112,9 +114,8 @@ class ManufacturerController extends Controller
         if (!$data = Manufacturer::whereId($id)->first())
             return redirect()->back()->with('error', 'Something went wrong');
 
-        $this->removeOldImage($data->image,$this->path);
+        $this->removeOldImage($data->image, $this->path);
         $data->delete();
         return redirect(route('manufacturer'))->with('success', 'Manufacturer  Deleted Successfully');
     }
-
 }

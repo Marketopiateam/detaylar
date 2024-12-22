@@ -145,7 +145,6 @@ class CustomerController extends Controller
     } catch (\Exception $e) {
       return ['status' => 0, 'message' => 'Error'];
     }
-
   }
   //delete address
   public function deleteAddress(Request $request)
@@ -176,7 +175,7 @@ class CustomerController extends Controller
 
       $validator = $request->validate([
         'firstName' => 'required|max:255',
-        'telephone' => 'required|max:10',
+        'telephone' => 'required|max:11',
         'email' => 'required',
       ], [
         'firstName' => 'First name is required',
@@ -187,14 +186,14 @@ class CustomerController extends Controller
       if ($request->hasFile('profile')) {
         $this->createDirectory($this->path);
         $imageName = $this->saveCustomFileAndGetImageName(request()->file('profile'), $this->path);
-        Customer::where('id', $this->getUser->id)->update(['image' => $imageName]);
+        Customer::where('id', $this->getUser->id)->update(['image' => "uploads/user/$imageName"]);
       }
 
       $update = Customer::where('id', $this->getUser->id)->update($request->except(['_token', 'profile']));
       $getNew = Customer::select('firstname', 'lastname', 'email', 'image', 'creation', 'telephone')->findOrFail($this->getUser->id);
       return redirect()->back()->with('commonSuccess', 'Profile Successfully Updated');
     } catch (\Exception $e) {
-      return redirect()->back()->with('commonError', 'Error');
+      return redirect()->back()->with('commonError', $e->getMessage());
     }
   }
   //add/update to wishlist
@@ -233,7 +232,6 @@ class CustomerController extends Controller
       $wishlistData = DB::table('wishlist')->where('customer_id', $this->getUser->id)->get();
 
       return ['status' => 1, 'message' => $msg, 'wishlistData' => $wishlistData, 'add' => $add];
-
     } catch (\Exception $e) {
       return redirect()->back()->with('commonError', 'Error');
     }
@@ -292,7 +290,6 @@ class CustomerController extends Controller
     } else {
       return redirect()->back()->with('commonError', 'Current password wrong!');
     }
-
   }
   //change profile image
   public function changeProfilePicture(Request $request)
@@ -313,14 +310,12 @@ class CustomerController extends Controller
 
       $this->createDirectory($this->path);
       $imageName = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
-      Customer::whereId($this->getUser->id)->update(['image' => $imageName]);
+      Customer::whereId($this->getUser->id)->update(['image' => "uploads/user/$imageName"]);
       $getNew = Customer::select('firstname', 'lastname', 'email', 'telephone', 'image', 'creation')->findOrFail($this->getUser->id);
       return ['status' => 1, 'message' => 'Profile image uploaded!', 'data' => $getNew];
-
     } catch (\Exception $e) {
       return redirect()->back()->with('commonError', 'Error');
     }
-
   }
 
   //add review
@@ -363,7 +358,6 @@ class CustomerController extends Controller
 
 
       return redirect()->back()->with('commonSuccess', 'Review successfully submited!');
-
     } catch (\Exception $e) {
       return redirect()->back()->with('commonError', 'Error');
     }
@@ -383,7 +377,6 @@ class CustomerController extends Controller
       $this->buildSeo('Manage Address', ['otrixcommerce', 'Manage Address'], url()->current(), '');
 
       return view('frontend.user.manage-address', compact('address', 'countires'));
-
     } catch (\Exception $e) {
       return redirect()->back()->with('commonError', 'Error');
     }
@@ -506,7 +499,6 @@ class CustomerController extends Controller
 
       $pdf = PDF::loadView('admin.pdf.invoice', ['language_code' => $findLanguage->code, 'orderTaxes' => $orderTaxes, 'orderData' => $order, 'orderProducts' => $productDataFinalArr]);
       return $pdf->download('invoice-' . $order->invoice_prefix . '' . $order->invoice_no . '.pdf');
-
     } catch (\Exception $e) {
       return redirect()->back()->with('commonError', 'Error');
     }
@@ -525,5 +517,4 @@ class CustomerController extends Controller
     }
     return implode(' ', $new_validation_messages[0]);
   }
-
 }
