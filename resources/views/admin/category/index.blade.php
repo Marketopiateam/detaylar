@@ -67,6 +67,7 @@
                                 <tr>
                                     <th scope="col" class="sort" data-sort="name">Image</th>
                                     <th scope="col" class="sort" data-sort="name">Name</th>
+                                    <th scope="col" class="sort" data-sort="name">Main Category</th>
                                     <th scope="col" class="sort" data-sort="parent_id">Parent</th>
                                     <th scope="col" class="sort" data-sort="status">Meta Title</th>
                                     <th scope="col" class="sort" data-sort="status">Status</th>
@@ -88,6 +89,7 @@
                                             @endif
                                         </td>
                                         <td class="budget">{{ $value->admincategoryDescription->name }}</td>
+                                        <td class="budget">{{ $value->gender }}</td>
                                         <td class="budget">{{ $value->parent_id == 0 ? 'Yes' : 'No' }}</td>
                                         <td class="budget">{{ $value->admincategoryDescription->meta_title }}</td>
                                         <td class="budget"><span

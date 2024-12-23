@@ -25,7 +25,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $name = $request->get('name', '');
-        $records = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status')
+        $records = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
             ->with('admincategoryDescription')
             ->when($name != '', function ($q) use ($name) {
                 $q->whereHas('admincategoryDescription', function ($q) use ($name) {
@@ -55,6 +55,7 @@ class CategoryController extends Controller
         $category = new Category($request->only('sort_order', 'status', 'parent_id'));
         $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
         $category->image = "uploads/category/$category->image";
+        $category->gender = $request->gender;
         $category->save();
 
         $categoryDescription = new CategoryDescription();
@@ -94,7 +95,7 @@ class CategoryController extends Controller
             $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
             $category->image = "uploads/category/$category->image";
         }
-
+        $category->gender = $request->gender;
         $category->fill($request->only('sort_order', 'status', 'parent_id'))->save();
 
         //Update Category Description
@@ -127,5 +128,16 @@ class CategoryController extends Controller
         Category::whereIn('category_id', $categoryIds)->delete();
 
         return redirect(route('category'))->with('success', 'Category  Deleted Successfully');
+    }
+
+    public function getParentCategoryGender($id)
+    {
+        $category = Category::find($id);
+
+        if ($category) {
+            return response()->json(['parent_gender' => $category->gender]);
+        }
+
+        return response()->json(['error' => 'Category not found'], 404);
     }
 }

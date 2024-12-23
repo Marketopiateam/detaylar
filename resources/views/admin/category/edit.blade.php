@@ -231,9 +231,24 @@
                     </div>
                     <div class="card-body">
                         <div class="pl-lg-4 row">
+
+                            <div class="col-md-12 form-group{{ $errors->has('gender') ? ' has-danger' : '' }}">
+                                <label class="form-control-label" for="parent_id">{{ __('Main Gategory') }}</label>
+                                <select class="form-control" name="gender" id="gender" disabled>
+                                    <option value="men" @if ($data->gender == 'men') selected @endif>Men</option>
+                                    <option value="women" @if ($data->gender == 'women') selected @endif>Women
+                                    </option>
+                                </select>
+                                @if ($errors->has('gender'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('gender') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+
                             <div class="col-md-6 form-group{{ $errors->has('parent_id') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="parent_id">{{ __('Parent Category') }}</label>
-                                <select class="form-control" name="parent_id">
+                                <select class="form-control" name="parent_id" id="parent_category">
                                     <option value="0">Select</option>
                                     @foreach ($parentCategory as $key => $value)
                                         <option value="{{ $key }}"
@@ -369,6 +384,36 @@
                 $('#btnNxt').removeClass('d-none');
                 $('#btnSave').addClass('d-none');
             }
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            var parentCategoryId = $('#parent_category').val();
+            if (parentCategoryId == 0)
+                $('#gender').prop('disabled', false);
+
+            $('#parent_category').change(function() {
+                var parentCategoryId = $(this).val();
+
+                if (parentCategoryId == 0) {
+                    $('#gender').prop('disabled', false);
+                } else {
+                    $.ajax({
+                        url: '/detaylar/get-parent-category-gender/' +
+                            parentCategoryId,
+                        type: 'GET',
+                        success: function(response) {
+                            if (response.parent_gender) {
+                                $('#gender').val(response.parent_gender);
+                            }
+                            $('#gender').prop('disabled', true);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error fetching parent gender:", error);
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endpush

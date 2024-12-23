@@ -299,14 +299,20 @@ class GeneralApiController extends Controller
     //get categories
     public function getCategories(User $user)
     {
-        $categories = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status')
+        $men = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
             ->with('categoryDescription:name,category_id')
-            ->where('status', '1')->orderBy('sort_order', 'ASC')->get()->toArray();
+            ->where('status', '1')->where('gender', 'men')->orderBy('sort_order', 'ASC')->get()->toArray();
+
+        $women = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
+            ->with('categoryDescription:name,category_id')
+            ->where('status', '1')->where('gender', 'women')->orderBy('sort_order', 'ASC')->get()->toArray();
 
         //build tree
-        $tree = buildTree($categories);
+        $menTree = buildTree($men);
 
-        return ['status' => 1, 'data' => $tree];
+        $womenTree = buildTree($women);
+
+        return ['status' => 1, 'men' => $menTree, 'women' => $womenTree];
         //}
         // catch (\Exception $e) {
         //  return ['status'=> 0,'message'=>'Error'];
@@ -473,7 +479,7 @@ class GeneralApiController extends Controller
                 $ids[] = $value['category_id'];
             }
 
-            $data = Product::with('category:name,category_id', 'productDescription:id,product_id,name', 'special:product_id,price,start_date,end_date')
+            $data = Product::with('category:name,category_id', 'productDescription:id,product_id,name,short_description', 'special:product_id,price,start_date,end_date')
                 ->withCount([
                     'productReview as review_avg' => function ($query) {
                         $query->select(DB::raw('avg(rating)'));
