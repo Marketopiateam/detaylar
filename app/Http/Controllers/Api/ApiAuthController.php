@@ -47,7 +47,7 @@ class ApiAuthController extends Controller
 
         if ($validator->fails()) {
             $message = $this->one_validation_message($validator);
-            return ['status' => 0, 'message' => $message];
+            return response()->json(['status' => 0, 'message' => $message], 400);
         } else {
             $data = new Customer($request->only('firstname', 'lastname', 'email', 'telephone', 'creation'));
             $data->password = bcrypt($request->password);
@@ -72,13 +72,13 @@ class ApiAuthController extends Controller
                 if ($isFlutter) {
                     if ($token = Auth::guard('customer')->attempt(['email' => $data->email, 'password' => $request->password])) {
                         $updateToken = $data->update(['firebase_token' => $request->firebase_token]);
-                        return ['status' => 1, 'authToken' => $token, 'wishlistData' => [], 'cartCount' => '0', 'message' => "Customer created!", 'data' => $data];
+                        return response()->json(['status' => 1, 'authToken' => $token, 'wishlistData' => [], 'cartCount' => '0', 'message' => "Customer created!", 'data' => $data], 200);
                     }
                 } else {
-                    return ['status' => 1, 'message' => "Customer created!", 'data' => $data];
+                    return response()->json(['status' => 1, 'message' => "Customer created!", 'data' => $data], 200);
                 }
             } else {
-                return ['status' => 0, 'message' => "Error When create"];
+               return response()->json(['status' => 1, 'message' => "Error When create"], 400);
             }
         }
     }
@@ -95,7 +95,7 @@ class ApiAuthController extends Controller
 
         if ($validator->fails()) {
             $message = $this->one_validation_message($validator);
-            return ['status' => 0, 'message' => $message];
+            return response()->json(['status' => 0, 'message' => $message], 400);
         } else {
             $customer = Customer::select('id', 'email', 'image', 'image', 'firstname', 'lastname', 'telephone', 'creation')->where('email', $request->email)->first();
             if ($customer) {
@@ -108,12 +108,12 @@ class ApiAuthController extends Controller
                     $wishlistData = DB::table("wishlist")->where('customer_id', $customer->id)->pluck('product_id');
                     $cartCount = DB::table("cart")->where('customer_id', $customer->id)->sum('quantity');
                     $customer->update(['firebase_token' => $request->firebase_token]);
-                    return ['status' => 1, 'authToken' => $token, 'wishlistData' => $wishlistData, 'cartCount' => $cartCount == 0 ? '0' : $cartCount, 'message' => "Customer successfully login", 'data' => $customer];
+                    return response()->json(['status' => 0, 'authToken' => $token, 'wishlistData' => $wishlistData, 'cartCount' => $cartCount == 0 ? '0' : $cartCount, 'message' => "Customer successfully login", 'data' => $customer], 200);
                 } else {
-                    return ['status' => 0, 'message' => 'Email/Password Wrong', 'data' => json_decode('{}')];
+                    return response()->json(['status' => 1, 'message' => 'Email/Password Wrong', 'data' => json_decode('{}')], 401);
                 }
             } else {
-                return ['status' => 0, 'message' => 'Customer not found', 'data' => json_decode('{}'), 'code' => '401'];
+                return response()->json(['status' => 1, 'message' => 'Customer not found', 'data' => json_decode('{}') ], 404);
             }
         }
     }
