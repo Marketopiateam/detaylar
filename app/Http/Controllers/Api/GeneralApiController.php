@@ -299,13 +299,13 @@ class GeneralApiController extends Controller
     //get categories
     public function getCategories(User $user)
     {
-        $men = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
+        $men = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'men', 'women')
             ->with('categoryDescription:name,category_id')
-            ->where('status', '1')->where('gender', 'men')->orderBy('sort_order', 'ASC')->get()->toArray();
+            ->where('status', '1')->where('men', '=', true)->orderBy('sort_order', 'ASC')->get()->toArray();
 
-        $women = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
+        $women = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'men', 'women')
             ->with('categoryDescription:name,category_id')
-            ->where('status', '1')->where('gender', 'women')->orderBy('sort_order', 'ASC')->get()->toArray();
+            ->where('status', '1')->where('women', '=', true)->orderBy('sort_order', 'ASC')->get()->toArray();
 
         //build tree
         $menTree = buildTree($men);

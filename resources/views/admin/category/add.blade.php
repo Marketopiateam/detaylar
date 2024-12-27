@@ -146,6 +146,7 @@
                                 <select class="form-control" name="gender" id="gender">
                                     <option value="men">Men</option>
                                     <option value="women">Women</option>
+                                    <option value="both">Both</option>
                                 </select>
                                 @if ($errors->has('gender'))
                                     <span class="invalid-feedback" role="alert">
@@ -301,8 +302,7 @@
                     $('#gender').prop('disabled', false);
                 } else {
                     $.ajax({
-                        url: '/detaylar/get-parent-category-gender/' +
-                            parentCategoryId,
+                        url: '/detaylar/get-parent-category-gender/' + parentCategoryId,
                         type: 'GET',
                         success: function(response) {
                             if (response.parent_gender) {
@@ -315,6 +315,9 @@
                         }
                     });
                 }
+            });
+            $('form').submit(function() {
+                $('#gender').prop('disabled', false);
             });
         });
     </script>

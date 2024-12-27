@@ -25,7 +25,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $name = $request->get('name', '');
-        $records = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'gender')
+        $records = Category::select('category_id', 'image', 'parent_id', 'sort_order', 'status', 'men', 'women')
             ->with('admincategoryDescription')
             ->when($name != '', function ($q) use ($name) {
                 $q->whereHas('admincategoryDescription', function ($q) use ($name) {
@@ -55,7 +55,14 @@ class CategoryController extends Controller
         $category = new Category($request->only('sort_order', 'status', 'parent_id'));
         $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
         $category->image = "uploads/category/$category->image";
-        $category->gender = $request->gender;
+
+        if ($request->gender == 'men')
+            $category->men = 1;
+        if ($request->gender == 'women')
+            $category->women = 1;
+        if ($request->gender == 'both')
+            $category->men = $category->women = 1;
+
         $category->save();
 
         $categoryDescription = new CategoryDescription();
@@ -95,7 +102,14 @@ class CategoryController extends Controller
             $category->image = $this->saveCustomFileAndGetImageName(request()->file('image'), $this->path);
             $category->image = "uploads/category/$category->image";
         }
-        $category->gender = $request->gender;
+
+        if ($request->gender == 'men')
+            $category->men = 1;
+        if ($request->gender == 'women')
+            $category->women = 1;
+        if ($request->gender == 'both')
+            $category->men = $category->women = 1;
+
         $category->fill($request->only('sort_order', 'status', 'parent_id'))->save();
 
         //Update Category Description
@@ -135,7 +149,14 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         if ($category) {
-            return response()->json(['parent_gender' => $category->gender]);
+            if ($category->men == 1 && $category->women == 1)
+                return response()->json(['parent_gender' => 'both']);
+            elseif ($category->men == 1 && $category->women == 0)
+                return response()->json(['parent_gender' => 'men']);
+            elseif ($category->men == 0 && $category->women == 1)
+                return response()->json(['parent_gender' => 'women']);
+            elseif ($category->men == 0 && $category->women == 0)
+                return response()->json(['parent_gender' => 'none']);
         }
 
         return response()->json(['error' => 'Category not found'], 404);

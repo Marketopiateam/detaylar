@@ -89,7 +89,24 @@
                                             @endif
                                         </td>
                                         <td class="budget">{{ $value->admincategoryDescription->name }}</td>
-                                        <td class="budget">{{ $value->gender }}</td>
+                                        @if ($value->men != false && $value->women != false)
+                                            <td class="budget">
+                                                Both Men and Women
+                                            </td>
+                                        @elseif ($value->men != false)
+                                            <td class="budget">
+                                                Men
+                                            </td>
+                                        @elseif ($value->women != false)
+                                            <td class="budget">
+                                                Women
+                                            </td>
+                                        @else
+                                            <td class="budget">
+                                                Other
+                                            </td>
+                                        @endif
+
                                         <td class="budget">{{ $value->parent_id == 0 ? 'Yes' : 'No' }}</td>
                                         <td class="budget">{{ $value->admincategoryDescription->meta_title }}</td>
                                         <td class="budget"><span

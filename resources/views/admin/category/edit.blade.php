@@ -235,8 +235,10 @@
                             <div class="col-md-12 form-group{{ $errors->has('gender') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="parent_id">{{ __('Main Gategory') }}</label>
                                 <select class="form-control" name="gender" id="gender" disabled>
-                                    <option value="men" @if ($data->gender == 'men') selected @endif>Men</option>
-                                    <option value="women" @if ($data->gender == 'women') selected @endif>Women
+                                    <option value="men" @if ($data->men == 1 && $data->women == 0) selected @endif>Men</option>
+                                    <option value="women" @if ($data->men == 0 && $data->women == 1) selected @endif>Women
+                                    </option>
+                                    <option value="both" @if ($data->men == 1 && $data->women == 1) selected @endif>Both
                                     </option>
                                 </select>
                                 @if ($errors->has('gender'))
@@ -413,6 +415,9 @@
                         }
                     });
                 }
+            });
+            $('form').submit(function() {
+                $('#gender').prop('disabled', false);
             });
         });
     </script>
