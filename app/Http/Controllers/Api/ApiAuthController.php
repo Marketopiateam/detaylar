@@ -39,9 +39,10 @@ class ApiAuthController extends Controller
             $request->all(),
             [
                 'firstname' => 'required|regex:/^[\pL\s\-]+$/u',
+                'lastname' => 'required|regex:/^[\pL\s\-]+$/u',
                 'email' => 'required|unique:customer,email',
-                'telephone' => 'required|max:10',
-                'password' => 'required|min:4',
+                'telephone' => 'required|max:11',
+                'password' => 'required|min:8',
             ]
         );
 
@@ -75,10 +76,11 @@ class ApiAuthController extends Controller
                         return response()->json(['status' => 1, 'authToken' => $token, 'wishlistData' => [], 'cartCount' => '0', 'message' => "Customer created!", 'data' => $data], 200);
                     }
                 } else {
-                    return response()->json(['status' => 1, 'message' => "Customer created!", 'data' => $data], 200);
+                    $token = auth('api')->attempt(['email' => $request->email, 'password' => $request->password]);
+                    return response()->json(['status' => 1, 'message' => "Customer created!", 'authToken' => $token, 'data' => $data], 200);
                 }
             } else {
-               return response()->json(['status' => 1, 'message' => "Error When create"], 400);
+                return response()->json(['status' => 1, 'message' => "Error When create"], 400);
             }
         }
     }
@@ -113,7 +115,7 @@ class ApiAuthController extends Controller
                     return response()->json(['status' => 1, 'message' => 'Email/Password Wrong', 'data' => json_decode('{}')], 401);
                 }
             } else {
-                return response()->json(['status' => 1, 'message' => 'Customer not found', 'data' => json_decode('{}') ], 404);
+                return response()->json(['status' => 1, 'message' => 'Customer not found', 'data' => json_decode('{}')], 404);
             }
         }
     }

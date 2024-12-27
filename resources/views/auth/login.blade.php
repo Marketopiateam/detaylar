@@ -7,14 +7,10 @@
             <div class="col-lg-5 col-md-7">
                 <div class="card bg-white shadow border-0">
                     <div class="card-body px-lg-5 py-lg-5">
-                       <div class="text-center text-muted mb-4">
-                         <img src="{{asset('uploads')}}/store/{{config('settingConfig.config_store_image')}}" alt="Logo" class="logo" width="200">
-                         </br>
-                         <small class="text-black">
-                            Sign in with these credentials:
-                            <br>
-                            Username <strong>demo@mail.com</strong> Password: <strong>123456</strong>
-                        </small>
+                        <div class="text-center text-muted mb-4">
+                            <img src="{{ asset('uploads') }}/store/{{ config('settingConfig.config_store_image') }}"
+                                alt="Logo" class="logo" width="200">
+                            </br>
                         </div>
                         <form role="form" method="POST" action="{{ route('login') }}">
                             @csrf
@@ -24,7 +20,9 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                                     </div>
-                                    <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" value="{{ old('email','demo@mail.com') }}"  required autofocus>
+                                    <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
+                                        placeholder="{{ __('Email') }}" type="email" name="email"
+                                        value="{{ old('email') }}" required autofocus>
                                 </div>
                                 @if ($errors->has('email'))
                                     <span class="invalid-feedback" style="display: block;" role="alert">
@@ -37,7 +35,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                                     </div>
-                                    <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" value="123456" required>
+                                    <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
+                                        name="password" placeholder="{{ __('Password') }}" type="password" required>
                                 </div>
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback" style="display: block;" role="alert">
@@ -46,7 +45,8 @@
                                 @endif
                             </div>
                             <div class="custom-control custom-control-alternative custom-checkbox">
-                                <input class="custom-control-input" name="remember" id="customCheckLogin" type="checkbox" {{ old('remember') ? 'checked' : '' }}>
+                                <input class="custom-control-input" name="remember" id="customCheckLogin" type="checkbox"
+                                    {{ old('remember') ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="customCheckLogin">
                                     <span class="text-muted">{{ __('Remember me') }}</span>
                                 </label>

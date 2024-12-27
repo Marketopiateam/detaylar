@@ -23,10 +23,10 @@ use App\Models\Review;
 use App\Models\DOD;
 use App\Models\Page;
 use App\Models\Language;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use File;
-use DB;
-use Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class GeneralApiController extends Controller
