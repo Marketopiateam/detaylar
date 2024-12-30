@@ -105,7 +105,7 @@ class CartApiController extends Controller
                 return ['status' => 0, 'message' => 'Product not found!'];
             }
         } catch (\Exception $e) {
-            return ['status' => 0, 'message' => 'Error'];
+            return response()->json(['status' => 0, 'message' => $e->getMessage()]);
         }
     }
 
@@ -183,7 +183,7 @@ class CartApiController extends Controller
                 return ['status' => 0, 'message' => 'Error'];
             }
         } catch (\Exception $e) {
-            return ['status' => 0, 'message' => 'Error'];
+            return ['status' => 0, 'message' => $e->getMessage()];
         }
     }
 
@@ -221,7 +221,7 @@ class CartApiController extends Controller
                 'taxes' => $cartRecord['taxes']
             ];
         } else {
-            return ['status' => 0, 'message' => 'Error'];
+            return ['status' => 0, 'message' => 'Cart Not Found'];
         }
     }
 
