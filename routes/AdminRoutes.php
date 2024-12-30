@@ -11,14 +11,14 @@ Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('get.dashboard');
 
 //Image similarity
-Route::get('/AI-Image-Similarity', [AI_Controller::class, 'getSimilarity'])->name('get.AI-image-similarity');
+// Route::get('/AI-Image-Similarity', [AI_Controller::class, 'getSimilarity'])->name('get.AI-image-similarity');
 Route::get('/create-products-zip', [AI_Controller::class, 'createZipFile'])->name('create-products-zip');
 Route::post('/upload-products-zip', [AI_Controller::class, 'uploadZipFile'])->name('upload-products-zip');
 Route::post('/setting-up-model', [AI_Controller::class, 'settingUpModel'])->name('setting-up-model');
 Route::post('/update-image-similarity-config', [AI_Controller::class, 'setImageSimilarity'])->name('update.image-similarity-config');
 
 //Chat GPT Setup
-Route::get('/AI-chatGPT', [AI_Controller::class, 'getChatGPT'])->name('get.AI-chatGPT');
+// Route::get('/AI-chatGPT', [AI_Controller::class, 'getChatGPT'])->name('get.AI-chatGPT');
 Route::post('/update-chatGPT-config', [AI_Controller::class, 'updateChatGPTConfig'])->name('update.chatGPT-config');
 Route::post('/ask-chat-gpt', [AI_Controller::class, 'getContentFromChatGPT'])->name('get-content-from-chatGPT');
 Route::post('/seo-content-chat-gpt', [AI_Controller::class, 'getSeoContentFromChatGPT'])->name('get-seo-content-from-chatGPT');
@@ -70,14 +70,14 @@ Route::middleware(['check_permission'])->group(function () {
     include('PaymentMethodRoutes.php');
     include('GeoZoneRoutes.php');
 
-    Route::controller(SupportController::class)->group(function () {
-        Route::get('/contact-us', ['as' => 'contact-us', 'uses' => 'index']);
-    });
+    // Route::controller(SupportController::class)->group(function () {
+    //     Route::get('/contact-us', ['as' => 'contact-us', 'uses' => 'index']);
+    // });
 
-    Route::controller(NotificationController::class)->group(function () {
-        Route::get('/notifications', ['as' => 'notifications', 'uses' => 'index']);
-        Route::post('/notifications/store', ['as' => 'notifications.store', 'uses' => 'store']);
-    });
+    // Route::controller(NotificationController::class)->group(function () {
+    //     Route::get('/notifications', ['as' => 'notifications', 'uses' => 'index']);
+    //     Route::post('/notifications/store', ['as' => 'notifications.store', 'uses' => 'store']);
+    // });
 
     Route::controller(HomeController::class)->group(function () {
         Route::get('/featured-product', ['as' => 'featured-product', 'uses' => 'featuredProduct']);
@@ -93,15 +93,15 @@ Route::middleware(['check_permission'])->group(function () {
 });
 
 //clear cache & config
-Route::get('clear-cache', [
-    'as' => 'clear.cache',
-    'uses' => function () {
-        Artisan::call('cache:clear');
-        Artisan::call('config:clear');
-        Artisan::call('view:clear');
-        return redirect()->back()->with('success', 'Cleared');
-    }
-]);
+// Route::get('clear-cache', [
+//     'as' => 'clear.cache',
+//     'uses' => function () {
+//         Artisan::call('cache:clear');
+//         Artisan::call('config:clear');
+//         Artisan::call('view:clear');
+//         return redirect()->back()->with('success', 'Cleared');
+//     }
+// ]);
 
 //clear application cache
-Route::get('clear.app.cache', [HomeController::class, 'clearApplicationCache'])->name('clear.app.cache');
+// Route::get('clear.app.cache', [HomeController::class, 'clearApplicationCache'])->name('clear.app.cache');

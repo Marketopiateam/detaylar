@@ -82,37 +82,31 @@ class HomeController extends Controller
             if ($value->months == '06 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'June', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '07 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'July', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '08 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'August', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '09 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'September', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '10 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'October', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '11 ' . date('Y')) {
                 $buildChartArr[] = ['label' => 'November', 'value' => $value->sums];
                 continue;
-
             }
 
             if ($value->months == '12 ' . date('Y')) {
@@ -245,8 +239,6 @@ class HomeController extends Controller
         } else {
             return redirect()->back()->with('error', 'You can select maximum 5 categories only');
         }
-
-
     }
 
     public function homepageCategorySortOrder(Request $request)
@@ -308,7 +300,6 @@ class HomeController extends Controller
         $productIds = $this->getProduct($request->product_id);
         $data = DB::table('featured_products')->insert($productIds);
         return redirect(route('featured-product'))->with('success', 'Featured Product Added');
-
     }
 
     protected function getProduct($productId)
@@ -336,10 +327,9 @@ class HomeController extends Controller
     }
 
     //fetch states
-    public function fetchStates(Request $request) {
-        $getStates = State::where('country_id',$request->country_id)->get();
+    public function fetchStates(Request $request)
+    {
+        $getStates = State::where('country_id', $request->country_id)->get();
         return ['data' => $getStates];
     }
-
-
 }

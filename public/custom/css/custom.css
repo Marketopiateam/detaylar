@@ -3,14 +3,14 @@
 }
 
 .sidenav ul.navbar-nav li.nav-item a.nav-link.active{
-    color: #626ABB !important;
+    color: #000000 !important;
     background: #fff !important;
     font-size: .900rem;
     font-weight:700;
 
 }
 .sidenav ul.navbar-nav li.nav-item a.nav-link.active i {
-    color: #626ABB !important;
+    color:  #000000 !important;
 }
 
 .sidenav ul.navbar-nav li i {
@@ -36,7 +36,7 @@
     background: #fff !important;
 }
 .sidenav ul.navbar-nav li.nav-item a.nav-link.active span{
-    color: #626ABB !important;
+    color: #000000 !important;
     font-size: .900rem;
     font-weight:700
 }
@@ -46,9 +46,9 @@
 }
 
 li.current_sidebar_link{
-    background :#3b4187;
+    background :#FFA4C4;
 }
 
 .sidenav  {
-    background: #626ABB !important;
+    background: #000000 !important;
 }

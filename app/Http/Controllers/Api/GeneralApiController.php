@@ -61,24 +61,36 @@ class GeneralApiController extends Controller
             $data['categories'] = buildTree($categories, 0, 9);
 
             //homepage banners
-            $brands = file_get_contents(base_path() . '/storage/app/apphomepageSlider.json');
-            $data['homepageSlider'] = json_decode($brands);
+            // $brands = file_get_contents(base_path() . '/storage/app/apphomepageSlider.json');
+            // $data['homepageSlider'] = json_decode($brands);
 
             //banners
-            $brands = file_get_contents(base_path() . '/storage/app/appbanner.json');
-            $data['banners'] = json_decode($brands);
+            // $brands = file_get_contents(base_path() . '/storage/app/appbanner.json');
+            // $data['brands'] = json_decode($brands);
+
+            $banners = Banner::select('id', 'name', 'status')
+                ->with('images:id,banner_id,image')
+                ->where('status', '1')
+                ->orderBy('created_at', 'DESC')
+                ->take(5)
+                ->get();
+            $data['banners'] = json_decode($banners);
 
             //homepage manufacturers
-            $brands = file_get_contents(base_path() . '/storage/app/brands.json');
-            $data['manufacturers'] = json_decode($brands);
+            // $brands = file_get_contents(base_path() . '/storage/app/brands.json');
+            // $data['manufacturers'] = json_decode($brands);
 
             //Featured Products
-            $featureProduct = file_get_contents(base_path() . '/storage/app/featuredProducts.json');
-            $data['featuredproducts'] = json_decode($featureProduct);
+            $featuredProducts = DB::table('featured_products')
+                ->join('product', 'featured_products.product_id', '=', 'product.id')
+                ->join('product_description', 'product.id', '=', 'product_description.product_id')
+                ->where('product_description.language_id', $lang->id)
+                ->get();
+            $data['featuredproducts'] = json_decode($featuredProducts);
 
             //homepage DOD
-            $getDodProducts = file_get_contents(base_path() . '/storage/app/dodProducts.json');
-            $data['dodProducts'] = json_decode($getDodProducts);
+            // $getDodProducts = file_get_contents(base_path() . '/storage/app/dodProducts.json');
+            // $data['dodProducts'] = json_decode($getDodProducts);
 
             //homepage new arrival
             $data['newProducts'] = Product::select('id', 'image', 'category_id', 'model', 'price', 'quantity', 'sort_order', 'status', 'date_available')
@@ -94,10 +106,16 @@ class GeneralApiController extends Controller
                 ->take(4)
                 ->get();
 
+            $data['homePageCategory'] = DB::table('homepage_categories')
+                ->join('category', 'homepage_categories.category_id', '=', 'category.category_id')
+                ->join('category_description', 'category.category_id', '=', 'category_description.category_id')
+                ->where('category_description.language_id', $lang->id)
+                ->select('homepage_categories.*', 'category.*', 'category_description.*')
+                ->get();
 
             return ['status' => 1, 'data' => $data];
         } catch (\Exception $e) {
-            return ['status' => 0, 'message' => 'Error'];
+            return ['status' => 0, 'message' => $e->getMessage()];
         }
     }
 
@@ -370,7 +388,7 @@ class GeneralApiController extends Controller
                 $data['reletedProducts'] = [];
                 $data['productImages'] = [];
                 if (count($relatedIds) > 0) {
-                    $data['reletedProducts'] = Product::select('id', 'image', 'price', 'quantity', 'sort_order', 'status', 'date_available')
+                    $data['reletedProducts'] = Product::select('id', 'category_id', 'image', 'price', 'quantity', 'sort_order', 'status', 'date_available')
                         ->withCount([
                             'productReview as review_avg' => function ($query) {
                                 $query->select(DB::raw('avg(rating)'));
