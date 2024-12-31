@@ -84,7 +84,7 @@ Route::group(['prefix' => 'user'], function () {
       Route::post('/addToCart', 'addToCart');
       Route::get('/getCart', 'getCart');
       Route::post('/updateCart', 'updateCart');
-      Route::post('/deleteCart', 'deleteCart');
+      Route::delete('/deleteCart', 'deleteCart');
       Route::post('/applyCoupon', 'applyCoupon');
       Route::get('/getCheckoutData', 'getCheckoutData');
       Route::post('/selectShipping/{id?}', 'selectShipping');
