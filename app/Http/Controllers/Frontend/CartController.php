@@ -48,6 +48,7 @@ class CartController extends Controller
   //addToCart api
   public function addToCart(Request $request)
   {
+    dd($request->options);
     try {
       $getProduct = Product::with('special:product_id,price,start_date,end_date')->findOrFail($request->product_id);
       $productBasePrice = $getProduct->price;

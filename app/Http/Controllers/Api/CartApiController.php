@@ -59,7 +59,7 @@ class CartApiController extends Controller
 
                         //update
                         DB::table('cart')->where('cart_id', $getCustomerCart->cart_id)
-                            ->update(['quantity' => $getCustomerCart->quantity + $request->quantity, 'option' => $request->options]);
+                            ->update(['quantity' => $getCustomerCart->quantity + $request->quantity, 'option' => json_encode($request->options)]);
 
                         //increment product quantity
                         Product::where('id', $getCustomerCart->product_id)->update(['quantity' => $qty]);
@@ -88,7 +88,7 @@ class CartApiController extends Controller
                             'customer_id' => $this->getUser->id,
                             'quantity' => $request->quantity,
                             'date_added' => date('Y-m-d H:i:s'),
-                            'option' => $request->options
+                            'option' => json_encode($request->options)
                         ]);
 
                         //decrement product quantity
@@ -675,6 +675,7 @@ class CartApiController extends Controller
                     'id' => $value->id,
                     'totalPrice' => $finalPrice,
                     'special' => number_format($specialPrice, 2),
+                    'option' => $decodeOptions,
                     'taxStatus' => $value->taxStatus,
                     'taxType' => $value->type,
                     'rate' => $value->rate,
