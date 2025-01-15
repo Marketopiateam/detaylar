@@ -71,7 +71,7 @@ class CartApiController extends Controller
 
                         $cartCount = DB::table('cart')->where('customer_id', $this->getUser->id)->sum('quantity');
 
-                        return ['status' => 1, 'message' => 'Product Added To Cart!', 'cartCount' => $cartCount];
+                        return ['status' => 1, 'message' => 'Product Added To Cart!', 'cartCount' => $cartCount, "cart_id" => $getCustomerCart->cart_id];
                     } else {
                         return ['status' => 0, 'message' => 'Only ' . $getProduct->quantity . ' products in stock'];
                     }
@@ -83,20 +83,19 @@ class CartApiController extends Controller
                     // check stock
                     if ($getProduct->quantity >= $request->quantity) {
 
-                        DB::table('cart')->insert([
+                        $cart = DB::table('cart')->insert([
                             'product_id' => $request->product_id,
                             'customer_id' => $this->getUser->id,
                             'quantity' => $request->quantity,
                             'date_added' => date('Y-m-d H:i:s'),
                             'option' => json_encode($request->options)
                         ]);
-
                         //decrement product quantity
                         Product::where('id', $request->product_id)->update(['quantity' => $getProduct->quantity - $request->quantity]);
 
                         $cartCount = DB::table('cart')->where('customer_id', $this->getUser->id)->sum('quantity');
 
-                        return ['status' => 1, 'message' => 'Product Added To Cart!', 'cartCount' => $cartCount];
+                        return ['status' => 1, 'message' => 'Product Added To Cart!', 'cartCount' => $cartCount, "cart_id" => $cartCount->cart_id];
                     } else {
                         return ['status' => 0, 'message' => 'Only ' . $getProduct->quantity . ' products in stock'];
                     }
